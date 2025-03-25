@@ -7,57 +7,6 @@ import {
 
 const API_BASE_URL = "https://jsonplaceholder.typicode.com";
 
-export async function fetchBlogPosts(
-  params: SearchParams = {}
-): Promise<BlogPostResponse> {
-  const { query = "", page = 1, limit = 9 } = params;
-
-  // Fetch posts from JSONPlaceholder
-  const response = await fetch(
-    `${API_BASE_URL}/posts?_start=${(page - 1) * limit}&_limit=${limit}`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch blog posts");
-  }
-
-  const posts: JsonPlaceholderPost[] = await response.json();
-
-  // Transform JSONPlaceholder posts to our BlogPost format
-  const transformedPosts: BlogPost[] = posts.map((post) => ({
-    id: post.id.toString(),
-    slug: `post-${post.id}`,
-    title: post.title,
-    excerpt: post.body.substring(0, 150) + "...",
-    content: post.body,
-    author: "John Doe", // JSONPlaceholder doesn't provide author info
-    publishedAt: new Date(
-      Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
-    ).toISOString(), // Random date within last 30 days
-    coverImage: `https://picsum.photos/800/400?random=${post.id}`,
-  }));
-
-  // Filter by search query if provided
-  const filteredPosts = query
-    ? transformedPosts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(query.toLowerCase()) ||
-          post.content.toLowerCase().includes(query.toLowerCase())
-      )
-    : transformedPosts;
-
-  // Get total count from API
-  const totalResponse = await fetch(`${API_BASE_URL}/posts`);
-  const allPosts = await totalResponse.json();
-  const total = query ? filteredPosts.length : allPosts.length;
-
-  return {
-    posts: filteredPosts,
-    total,
-    page,
-    limit,
-  };
-}
-
 function transformJsonPlaceholderPost(post: JsonPlaceholderPost): BlogPost {
   return {
     id: post.id.toString(),
@@ -71,6 +20,54 @@ function transformJsonPlaceholderPost(post: JsonPlaceholderPost): BlogPost {
     ).toISOString(),
     coverImage: `https://picsum.photos/800/400?random=${post.id}`,
   };
+}
+
+export async function fetchBlogPosts(
+  params: SearchParams = {}
+): Promise<BlogPostResponse> {
+  const { query = "", page = 1, limit = 9 } = params;
+
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/posts?_start=${(page - 1) * limit}&_limit=${limit}`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch blog posts: ${response.statusText}`);
+    }
+
+    const posts: JsonPlaceholderPost[] = await response.json();
+
+    const transformedPosts: BlogPost[] = posts.map(
+      transformJsonPlaceholderPost
+    );
+
+    const filteredPosts = query
+      ? transformedPosts.filter(
+          (post) =>
+            post.title.toLowerCase().includes(query.toLowerCase()) ||
+            post.content.toLowerCase().includes(query.toLowerCase())
+        )
+      : transformedPosts;
+
+    const totalResponse = await fetch(`${API_BASE_URL}/posts`);
+    if (!totalResponse.ok) {
+      throw new Error(
+        `Failed to fetch total posts: ${totalResponse.statusText}`
+      );
+    }
+    const allPosts = await totalResponse.json();
+    const total = query ? filteredPosts.length : allPosts.length;
+
+    return {
+      posts: filteredPosts,
+      total,
+      page,
+      limit,
+    };
+  } catch (error) {
+    console.error("Error fetching blog posts:", error);
+    throw error;
+  }
 }
 
 export async function fetchBlogPost(slug: string): Promise<BlogPost | null> {
