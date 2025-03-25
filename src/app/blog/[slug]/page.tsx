@@ -7,10 +7,9 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 export default async function BlogPostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
-  const post = await fetchBlogPost(slug);
+  const post = await fetchBlogPost(params.slug);
 
   if (!post) {
     notFound();

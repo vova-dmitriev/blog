@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, Suspense } from "react";
 import SearchBar from "./components/SearchBar";
 import Loading from "./components/Loading";
 import { fetchBlogPosts } from "@/lib/api";
@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import ScrollToTop from "./components/ScrollToTop";
 
-export default function Home() {
+function BlogContent() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -142,6 +142,16 @@ export default function Home() {
       )}
 
       <ScrollToTop />
+    </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <main className="container mx-auto px-4 py-8">
+      <Suspense fallback={<Loading />}>
+        <BlogContent />
+      </Suspense>
     </main>
   );
 }
