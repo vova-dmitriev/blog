@@ -82,14 +82,33 @@ This project uses a mock API for blog data. The API endpoints are:
 
 ## Testing
 
+The project uses Jest and React Testing Library for unit testing. The test suite includes:
+
+- Component tests for critical UI elements
+- State management tests
+- User interaction tests
+
 Run tests with:
 ```bash
+# Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
 ```
+
+Test files are located in `src/app/components/__tests__/` directory.
 
 ## Deployment
 
 The application is deployed on Vercel. Visit [deployment-url] to see it in action.
+
+## Live Demo
+
+Visit the live demo: [Blog Platform](https://blog-5mqfr6bxf-vadmitrievs-projects.vercel.app/)
 
 ## Contributing
 
