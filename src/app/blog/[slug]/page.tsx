@@ -7,6 +7,7 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 interface BlogPostPageProps {
   params: {
     slug: string;
+    _searchParams: { [key: string]: string | string[] | undefined };
   };
 }
 
