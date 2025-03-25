@@ -58,16 +58,7 @@ export async function fetchBlogPosts(
   };
 }
 
-export async function fetchBlogPost(slug: string): Promise<BlogPost> {
-  const postId = slug.replace("post-", "");
-
-  const response = await fetch(`${API_BASE_URL}/posts/${postId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch blog post");
-  }
-
-  const post: JsonPlaceholderPost = await response.json();
-
+function transformJsonPlaceholderPost(post: JsonPlaceholderPost): BlogPost {
   return {
     id: post.id.toString(),
     slug: `post-${post.id}`,
@@ -80,6 +71,25 @@ export async function fetchBlogPost(slug: string): Promise<BlogPost> {
     ).toISOString(),
     coverImage: `https://picsum.photos/800/400?random=${post.id}`,
   };
+}
+
+export async function fetchBlogPost(slug: string): Promise<BlogPost | null> {
+  try {
+    const postId = slug.replace("post-", "");
+    const response = await fetch(`${API_BASE_URL}/posts/${postId}`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(`Failed to fetch blog post: ${response.statusText}`);
+    }
+
+    const post: JsonPlaceholderPost = await response.json();
+    return transformJsonPlaceholderPost(post);
+  } catch (error) {
+    console.error("Error fetching blog post:", error);
+    throw error;
+  }
 }
 
 // Mock data for development
