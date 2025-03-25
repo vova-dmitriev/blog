@@ -5,13 +5,15 @@ A modern blog platform built with Next.js, featuring server-side rendering, clie
 ## Features
 
 - 🚀 Server-side rendering (SSR) for optimal performance
-- 🔍 Real-time search functionality with debouncing
+- 🔍 Real-time search functionality with debouncing and URL query sync
 - 📱 Responsive design for all devices
 - 🌓 Dark/Light mode support
 - 📝 Dynamic blog post pages
 - 🔄 Infinite scroll for blog posts
 - 🎨 Styled with Tailwind CSS
 - 📊 State management with Zustand
+- ⬆️ Scroll to top functionality
+- 🔎 Search with URL query parameters
 
 ## Tech Stack
 
@@ -20,13 +22,13 @@ A modern blog platform built with Next.js, featuring server-side rendering, clie
 - Tailwind CSS
 - Zustand (State Management)
 - Hero Icons
-- Date-fns
+- JSONPlaceholder API
 
 ## Getting Started
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
+git clone https://github.com/vova-dmitriev/blog
 cd blog
 ```
 
