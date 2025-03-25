@@ -4,15 +4,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-interface BlogPostPageProps {
-  params: {
-    slug: string;
-    _searchParams: { [key: string]: string | string[] | undefined };
-  };
-}
-
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = params;
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const post = await fetchBlogPost(slug);
 
   if (!post) {
