@@ -10,6 +10,12 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      backgroundColor: {
+        background: "hsl(var(--background) / <alpha-value>)",
+      },
+      textColor: {
+        foreground: "hsl(var(--foreground) / <alpha-value>)",
+      },
       typography: {
         DEFAULT: {
           css: {

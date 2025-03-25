@@ -20,7 +20,7 @@ interface BlogStore {
 }
 
 const initialState = {
-  posts: [],
+  posts: [] as BlogPost[],
   loading: false,
   error: null,
   searchQuery: "",

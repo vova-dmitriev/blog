@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import SearchBar from "./components/SearchBar";
 import Loading from "./components/Loading";
 import { fetchBlogPosts } from "@/lib/api";
@@ -20,39 +20,41 @@ export default function Home() {
   const searchParams = useSearchParams();
   const { searchQuery, setSearchQuery } = useBlogStore();
 
-  // Initialize search query from URL
   useEffect(() => {
     const query = searchParams.get("q") || "";
     setSearchQuery(query);
   }, [searchParams, setSearchQuery]);
 
-  const loadPosts = async (pageNum: number) => {
-    try {
-      setLoading(true);
-      const response = await fetchBlogPosts({
-        query: searchQuery,
-        page: pageNum,
-        limit: 9,
-      });
+  const loadPosts = useCallback(
+    async (pageNum: number) => {
+      try {
+        setLoading(true);
+        const response = await fetchBlogPosts({
+          query: searchQuery,
+          page: pageNum,
+          limit: 9,
+        });
 
-      if (pageNum === 1) {
-        setPosts(response.posts);
-      } else {
-        setPosts((prev) => [...prev, ...response.posts]);
+        if (pageNum === 1) {
+          setPosts(response.posts);
+        } else {
+          setPosts((prev) => [...prev, ...response.posts]);
+        }
+
+        setHasMore(response.posts.length === 9);
+        setPage(pageNum);
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      } finally {
+        setLoading(false);
       }
-
-      setHasMore(response.posts.length === 9);
-      setPage(pageNum);
-    } catch (error) {
-      console.error("Error loading posts:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [searchQuery]
+  );
 
   useEffect(() => {
     loadPosts(1);
-  }, [searchQuery]);
+  }, [searchQuery, loadPosts]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -76,10 +78,11 @@ export default function Home() {
     return () => {
       observer.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore, loading, page]);
 
   return (
-    <main className="container mx-auto px-4 py-8 bg-transparent">
+    <main className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
         Welcome to Our Blog
       </h1>

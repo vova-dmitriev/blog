@@ -29,7 +29,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </Link>
 
       <article className="prose dark:prose-invert lg:prose-xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+          {post.title}
+        </h1>
         <div className="flex items-center text-gray-600 dark:text-gray-400 mb-8">
           <span>By {post.author}</span>
           <span className="mx-2">•</span>
@@ -47,7 +49,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             />
           </div>
         )}
-        <div className="mt-8">{post.content}</div>
+        <div className="mt-8 text-gray-800 dark:text-gray-200">
+          {post.content}
+        </div>
       </article>
     </div>
   );

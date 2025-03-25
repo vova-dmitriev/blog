@@ -8,7 +8,6 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Показываем кнопку, когда пользователь проскроллил на 300px вниз
       if (window.scrollY > 300) {
         setIsVisible(true);
       } else {

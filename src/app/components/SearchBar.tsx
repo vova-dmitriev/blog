@@ -12,7 +12,6 @@ export default function SearchBar() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(searchInput);
-      // Update URL with search query
       const params = new URLSearchParams(searchParams.toString());
       if (searchInput) {
         params.set("q", searchInput);
